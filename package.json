@@ -1,0 +1,17 @@
+{
+  "name": "web3task-skribbl-clone",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace @skribbl-clone/server\" \"npm run dev --workspace @skribbl-clone/client\"",
+    "build": "npm run build --workspace @skribbl-clone/client",
+    "lint": "echo \"No linter configured\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

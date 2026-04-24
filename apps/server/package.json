@@ -1,0 +1,17 @@
+{
+  "name": "@skribbl-clone/server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/main.js",
+    "build": "echo \"Server uses plain Node.js modules and does not need a build step\"",
+    "lint": "echo \"No linter configured\""
+  },
+  "dependencies": {
+    "@skribbl-clone/shared": "*",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  }
+}
