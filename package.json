@@ -7,7 +7,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev --workspace @skribbl-clone/server\" \"npm run dev --workspace @skribbl-clone/client\"",
+    "dev": "concurrently \"npm run dev --workspace @skribbl-clone/server\" \"npm run dev --workspace @skribbl-clone/client\" --host",
     "build": "npm run build --workspace @skribbl-clone/client",
     "lint": "echo \"No linter configured\""
   },

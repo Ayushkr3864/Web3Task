@@ -63,6 +63,9 @@ export default function CanvasBoard({ roomState, isDrawer, onSendStroke, onUndo,
       return;
     }
 
+    event.preventDefault();
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+
     const point = getCanvasPoint(event);
     currentStrokeRef.current = {
       id: crypto.randomUUID(),
@@ -78,6 +81,8 @@ export default function CanvasBoard({ roomState, isDrawer, onSendStroke, onUndo,
       return;
     }
 
+    event.preventDefault();
+
     currentStrokeRef.current = {
       ...currentStrokeRef.current,
       points: [...currentStrokeRef.current.points, getCanvasPoint(event)],
@@ -86,7 +91,10 @@ export default function CanvasBoard({ roomState, isDrawer, onSendStroke, onUndo,
     onSendStroke(roomCode, currentStrokeRef.current);
   };
 
-  const handlePointerUp = () => {
+  const handlePointerUp = (event) => {
+    event?.preventDefault?.();
+    event?.currentTarget?.releasePointerCapture?.(event.pointerId);
+
     if (canDraw && currentStrokeRef.current) {
       onSendStroke(roomCode, currentStrokeRef.current);
     }
@@ -161,11 +169,12 @@ export default function CanvasBoard({ roomState, isDrawer, onSendStroke, onUndo,
         ref={canvasRef}
         width={960}
         height={540}
-        className={`w-full rounded-2xl border-4 border-black bg-yellow-50 shadow-md ${canDraw ? "ring-4 ring-crayon-blue/40" : ""}`}
+        className={`w-full touch-none rounded-2xl border-4 border-black bg-yellow-50 shadow-md ${canDraw ? "ring-4 ring-crayon-blue/40" : ""}`}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerUp}
+        onPointerCancel={handlePointerUp}
       />
     </div>
   );
