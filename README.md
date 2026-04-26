@@ -110,12 +110,10 @@ VITE_SERVER_URL=http://localhost:3001
 
 ## Production Deployment
 
-This workspace was built locally only. A live deployment was not created from this environment.
+Live deployment:
 
-Suggested deployment split:
-
-- Frontend on Vercel or Netlify
-- Backend on Render or Railway
+- Frontend: `https://web3-task-client.vercel.app/`
+- Backend: `https://web3task-ydj0.onrender.com/`
 
 Make sure the frontend `VITE_SERVER_URL` points to the deployed backend and the backend `CLIENT_ORIGIN` points to the deployed frontend origin.
 
