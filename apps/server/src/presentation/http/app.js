@@ -10,6 +10,13 @@ export function createApp(roomService) {
     res.json({ ok: true });
   });
 
+  app.get("/", (_req, res) => {
+    res.json({
+      message: "Backend test route is working",
+      ok: true,
+    });
+  });
+
   app.get("/rooms/public", (_req, res) => {
     res.json({ rooms: roomService.getPublicRooms() });
   });

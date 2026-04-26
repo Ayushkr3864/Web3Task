@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
-const COLORS = ["#111827", "#ef4444", "#f59e0b", "#10b981", "#2563eb", "#7c3aed"];
+const COLORS = [
+  { name: "Blue", value: "#3498db", className: "bg-crayon-blue" },
+  { name: "Red", value: "#e74c3c", className: "bg-crayon-red" },
+  { name: "Yellow", value: "#f1c40f", className: "bg-crayon-yellow" },
+  { name: "Green", value: "#2ecc71", className: "bg-crayon-green" },
+  { name: "Orange", value: "#e67e22", className: "bg-crayon-orange" },
+];
 
 function drawStroke(context, stroke) {
   if (!stroke.points.length) {
@@ -11,7 +17,7 @@ function drawStroke(context, stroke) {
   context.lineCap = "round";
   context.lineJoin = "round";
   context.lineWidth = stroke.size;
-  context.strokeStyle = stroke.tool === "eraser" ? "#f8fafc" : stroke.color;
+  context.strokeStyle = stroke.tool === "eraser" ? "#fefce8" : stroke.color;
   context.beginPath();
   context.moveTo(stroke.points[0].x, stroke.points[0].y);
 
@@ -23,13 +29,7 @@ function drawStroke(context, stroke) {
   context.restore();
 }
 
-export default function CanvasBoard({
-  roomState,
-  isDrawer,
-  onSendStroke,
-  onUndo,
-  onClear,
-}) {
+export default function CanvasBoard({ roomState, isDrawer, onSendStroke, onUndo, onClear }) {
   const canvasRef = useRef(null);
   const currentStrokeRef = useRef(null);
   const [brushColor, setBrushColor] = useState(COLORS[0]);
@@ -44,7 +44,7 @@ export default function CanvasBoard({
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = "#f8fafc";
+    context.fillStyle = "#fefce8";
     context.fillRect(0, 0, canvas.width, canvas.height);
     strokes.forEach((stroke) => drawStroke(context, stroke));
   }, [strokes]);
@@ -66,7 +66,7 @@ export default function CanvasBoard({
     const point = getCanvasPoint(event);
     currentStrokeRef.current = {
       id: crypto.randomUUID(),
-      color: brushColor,
+      color: brushColor.value,
       size: brushSize,
       tool,
       points: [point],
@@ -94,14 +94,16 @@ export default function CanvasBoard({
   };
 
   return (
-    <div className="canvas-panel">
-      <div className="canvas-toolbar">
-        <div className="color-row">
+    <div className="rounded-2xl border-4 border-black bg-white p-5 shadow-lg">
+      <div className="mb-4 grid gap-4">
+        <div className="flex flex-wrap gap-3">
           {COLORS.map((color) => (
             <button
-              key={color}
-              className={`color-swatch${brushColor === color ? " active" : ""}`}
-              style={{ backgroundColor: color }}
+              key={color.value}
+              aria-label={color.name}
+              className={`h-11 w-11 rounded-2xl border-4 border-black shadow-md ${color.className} ${
+                brushColor.value === color.value ? "scale-105" : ""
+              }`}
               onClick={() => {
                 setTool("brush");
                 setBrushColor(color);
@@ -110,21 +112,46 @@ export default function CanvasBoard({
           ))}
         </div>
 
-        <div className="toolbar-controls">
-          <button className={tool === "brush" ? "active-chip" : ""} onClick={() => setTool("brush")}>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            className={`rounded-xl border-4 border-black px-4 py-3 text-xl text-gray-900 shadow-md ${
+              tool === "brush" ? "bg-crayon-blue text-white" : "bg-yellow-50"
+            }`}
+            onClick={() => setTool("brush")}
+          >
             Brush
           </button>
-          <button className={tool === "eraser" ? "active-chip" : ""} onClick={() => setTool("eraser")}>
+          <button
+            className={`rounded-xl border-4 border-black px-4 py-3 text-xl text-gray-900 shadow-md ${
+              tool === "eraser" ? "bg-crayon-red text-white" : "bg-yellow-50"
+            }`}
+            onClick={() => setTool("eraser")}
+          >
             Eraser
           </button>
-          <label className="range-label">
-            Size
-            <input type="range" min="2" max="22" value={brushSize} onChange={(event) => setBrushSize(Number(event.target.value))} />
+          <label className="flex items-center gap-3 rounded-2xl border-2 border-gray-800 bg-yellow-50 px-4 py-3 text-xl text-gray-900 shadow-md">
+            <span>Size</span>
+            <input
+              className="w-36 accent-crayon-orange"
+              type="range"
+              min="2"
+              max="22"
+              value={brushSize}
+              onChange={(event) => setBrushSize(Number(event.target.value))}
+            />
           </label>
-          <button onClick={() => onUndo(roomCode)} disabled={!canDraw}>
+          <button
+            className="rounded-xl border-4 border-black bg-crayon-yellow px-4 py-3 text-xl text-gray-900 shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={() => onUndo(roomCode)}
+            disabled={!canDraw}
+          >
             Undo
           </button>
-          <button onClick={() => onClear(roomCode)} disabled={!canDraw}>
+          <button
+            className="rounded-xl border-4 border-black bg-crayon-orange px-4 py-3 text-xl text-gray-900 shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={() => onClear(roomCode)}
+            disabled={!canDraw}
+          >
             Clear
           </button>
         </div>
@@ -134,7 +161,7 @@ export default function CanvasBoard({
         ref={canvasRef}
         width={960}
         height={540}
-        className={`board${canDraw ? " board-live" : ""}`}
+        className={`w-full rounded-2xl border-4 border-black bg-yellow-50 shadow-md ${canDraw ? "ring-4 ring-crayon-blue/40" : ""}`}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
