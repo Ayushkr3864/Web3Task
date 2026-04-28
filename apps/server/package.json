@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch src/main.js",
+     "start": "node src/main.js",
     "build": "echo \"Server uses plain Node.js modules and does not need a build step\"",
     "lint": "echo \"No linter configured\""
   },
